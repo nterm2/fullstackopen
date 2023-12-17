@@ -1,56 +1,14 @@
 import { useState, useEffect} from 'react'
+import './index.css'
+
 import phonebookServices from "/components/phonebookServices.js"
-
-const Filter = ({ filterHandler }) => {
-  return (
-    <p>filter shown with <input onChange={filterHandler}/></p>
-  )
-}
-
-const PersonForm = (props) => {
- return (
-    <form onSubmit={props.storePerson}>
-      <div>
-        name: <input onChange={props.handleNameInput} value={props.newName}/>
-        phone number: <input onChange={props.handlePhoneNumberInput} value={props.phoneNumber} />
-      </div>
-      <div>
-        <button type="submit">add</button>
-      </div>
-    </form>
- )
-}
-
-const Persons = ({ persons, setPersons }) => {
-  const handlePersonDeletion = (personName, personID) => {
-    let deletePerson = confirm(`Delete ${personName}?`)
-    if (deletePerson){
-      phonebookServices
-        .deletePerson(personID)
-        .then(() => {
-          const cleanedPersons = persons.filter(person => person.name !== personName)
-          setPersons(cleanedPersons)
-          console.log(cleanedPersons)
-        })
-    }
-  }
-  return (
-    <>
-      {persons.map(
-        (person) => {
-          return (
-            <div key={person.id}>
-              <p>{ person.name } {person.number}</p>
-              <button onClick={() => handlePersonDeletion(person.name, person.id)}>Delete</button>
-            </div>
-          )
-      }
-    )}
-    </>
-  )
-}
+import Filter from '../components/filter'
+import Notification from '../components/notification'
+import PersonForm from '../components/personform'
+import Persons from '../components/persons'
 
 const App = () => {
+  const [message, setMessage] = useState(null)
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [phoneNumber, setPhoneNumber] = useState('')
@@ -85,8 +43,9 @@ const App = () => {
         if (replaceNumber) {
           phonebookServices
             .updateNumber(existingPerson.id, newPerson)
+            setMessage(`Updated ${newPerson.name}`)
+            setTimeout(() => setMessage(null), 5000)
         }
-        const updatedPersons = persons.map(person => person.id !== existingPerson.id ? person : existingPerson)
       }
       else {
         alert(`${newName} is already added to the phonebook`)
@@ -102,6 +61,8 @@ const App = () => {
           setPersons(persons.concat(createdPerson))
           setPhoneNumber('')
           setNewName('')
+          setMessage(`Added ${newPerson.name}`)
+          setTimeout(() => setMessage(null), 5000)
           }
         )
 
@@ -122,6 +83,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message}/>
       <Filter filterHandler={handleFilterValue}/>
       <h3>Add a new person</h3>
       <PersonForm storePerson={storePerson} handleNameInput={handleNameInput} newName={newName} handlePhoneNumberInput={handlePhoneNumberInput} phoneNumber={phoneNumber}/>

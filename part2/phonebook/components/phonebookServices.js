@@ -13,6 +13,7 @@ const postNumber = (newPerson) => {
 
 const deletePerson = (personID) => {
     const response = axios.delete(`${baseURL}/${personID}`)
+    return response.then(response => response.data)
 }
 
 const updateNumber = (personID, updatedPerson) => {
