@@ -1,3 +1,5 @@
+import phonebookServices from "/components/phonebookServices.js"
+
 const Persons = ({ persons, setPersons }) => {
     const handlePersonDeletion = (personName, personID) => {
       let deletePerson = confirm(`Delete ${personName}?`)
@@ -7,7 +9,6 @@ const Persons = ({ persons, setPersons }) => {
           .then(() => {
             const cleanedPersons = persons.filter(person => person.name !== personName)
             setPersons(cleanedPersons)
-            console.log(cleanedPersons)
           })
       }
     }

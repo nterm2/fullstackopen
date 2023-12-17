@@ -13,6 +13,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [phoneNumber, setPhoneNumber] = useState('')
   const [filterValue, setFilterValue] = useState('')
+  const [successfulMessage, setSuccessfulMessage] = useState(true)
   useEffect(() => {
     phonebookServices.getNumbers()
       .then(
@@ -43,8 +44,21 @@ const App = () => {
         if (replaceNumber) {
           phonebookServices
             .updateNumber(existingPerson.id, newPerson)
-            setMessage(`Updated ${newPerson.name}`)
-            setTimeout(() => setMessage(null), 5000)
+            .then(
+              () => {
+                setSuccessfulMessage(true)
+                setMessage(`Updated ${newPerson.name}`)
+                setTimeout(() => setMessage(null), 5000)
+              }
+            )
+            .catch(
+              () => {
+                setSuccessfulMessage(false)
+                setMessage(`Information of ${newPerson.name} has already been removed from server`)
+                setTimeout(() => setMessage(null), 5000)
+              }
+            )
+
         }
       }
       else {
@@ -58,6 +72,7 @@ const App = () => {
         .postNumber(newPerson)
         .then(
           (createdPerson) => {
+          setSuccessfulMessage(true)
           setPersons(persons.concat(createdPerson))
           setPhoneNumber('')
           setNewName('')
@@ -83,7 +98,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={message}/>
+      <Notification message={message} successfulMessage={successfulMessage}/>
       <Filter filterHandler={handleFilterValue}/>
       <h3>Add a new person</h3>
       <PersonForm storePerson={storePerson} handleNameInput={handleNameInput} newName={newName} handlePhoneNumberInput={handlePhoneNumberInput} phoneNumber={phoneNumber}/>
