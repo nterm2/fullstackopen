@@ -2,7 +2,7 @@ import SingleCountryDisplay from "./singleCountryDisplay"
 import TooManyCountriesDisplay from "./tooManyCountryDisplay"
 import MultipleCountriesDisplay from "./multipleCountriesDisplay"
 
-const CountryDisplay = ({ filteredCountries, country, buttonHandler }) => {
+const CountryDisplay = ({ filteredCountries, country, buttonHandler, weatherData }) => {
     if (filteredCountries.length > 10) {
       return (
         <TooManyCountriesDisplay/>
@@ -17,7 +17,7 @@ const CountryDisplay = ({ filteredCountries, country, buttonHandler }) => {
     else if (filteredCountries.length === 1 && country) {
       const languages = Object.keys(country['languages'])
       return (
-        <SingleCountryDisplay country={country} languages={languages}/>)
+        <SingleCountryDisplay country={country} languages={languages} weatherData={weatherData}/>)
     }
   }
 
