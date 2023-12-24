@@ -59,12 +59,21 @@ function generateId() {
     return Math.random() * 1000 
 }
 app.post('/api/persons', (request, response) => {
-    const person = request.body 
-    console.log(person)
-    console.log(person)
+    const newPerson = request.body 
+    if (!newPerson.name || !newPerson.number) {
+        response.status(400).json({
+            "error": "name or number missing"
+        })
+    }
+    const personFound = persons.filter(person => person.name === newPerson.name)
+    if (personFound.length > 0) {
+        response.status(400).json({
+            "error": "name must be unique"
+        })
+    }
     const id = generateId()
-    person.id = id
-    persons = persons.concat(person)
+    newPerson.id = id
+    persons = persons.concat(newPerson)
     response.status(200).end()
 })
 const PORT=3004
