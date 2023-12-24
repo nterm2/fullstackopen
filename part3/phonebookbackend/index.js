@@ -3,7 +3,21 @@ const morgan = require('morgan')
 const app = express()
 app.use(express.json())
 
-app.use(morgan('tiny'))
+morgan.token('post_data', (request, response) => {
+    if (request.method === "POST") {
+        console.log(request.body)
+        return JSON.stringify(request.body)
+    }
+    return null
+})
+    // return [
+    //     tokens.method(req, res),
+    //     tokens.url(req, res),
+    //     tokens.status(req, res),
+    //     tokens.res(req, res, 'content-length'), '-',
+    //     tokens['post_data'](req, res)
+    // ].join(' ')
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post_data'))
 let persons = [
     { 
       "id": 1,
@@ -63,13 +77,13 @@ function generateId() {
 app.post('/api/persons', (request, response) => {
     const newPerson = request.body 
     if (!newPerson.name || !newPerson.number) {
-        response.status(400).json({
+        return response.status(400).json({
             "error": "name or number missing"
         })
     }
     const personFound = persons.filter(person => person.name === newPerson.name)
     if (personFound.length > 0) {
-        response.status(400).json({
+        return response.status(400).json({
             "error": "name must be unique"
         })
     }
