@@ -28,9 +28,9 @@ app.get('/api/persons/', (request, response, next) => {
     ).catch(error => next(error))
 })
 
-app.get('/info', (request, response) => {
+app.get('/info', async (request, response) => {
     const requestReceptionTime = new Date()
-    const numOfPeople = persons.length 
+    const numOfPeople = await Person.countDocuments({})
     response.send(`
     <p>Phonebook has info for ${numOfPeople} people</p>
     <p>${requestReceptionTime}</p>
