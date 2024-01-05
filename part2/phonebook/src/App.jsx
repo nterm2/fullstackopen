@@ -51,13 +51,11 @@ const App = () => {
                 setTimeout(() => setMessage(null), 5000)
               }
             )
-            .catch(
-              () => {
-                setSuccessfulMessage(false)
-                setMessage(`Information of ${newPerson.name} has already been removed from server`)
-                setTimeout(() => setMessage(null), 5000)
-              }
-            )
+            .catch(error => {
+              setSuccessfulMessage(false)
+              setMessage(error.response.data.error)
+              setTimeout(() => setMessage(null), 5000)
+            })
 
         }
       }
@@ -80,6 +78,11 @@ const App = () => {
           setTimeout(() => setMessage(null), 5000)
           }
         )
+        .catch(error => {
+          setSuccessfulMessage(false)
+          setMessage(error.response.data.error)
+          setTimeout(() => setMessage(null), 5000)
+        })
 
     }
   }

@@ -57,7 +57,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
 })
 
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const newPerson = request.body 
     if (!newPerson.name || !newPerson.number) {
         response.status(404).json({"error": "You must provide new person a name and a number."})
@@ -67,7 +67,9 @@ app.post('/api/persons', (request, response) => {
             name: newPerson.name, 
             number: newPerson.number
         })
-        person.save().then(savedPerson => {response.json(savedPerson)})
+        person.save()
+        .then(savedPerson => {response.json(savedPerson)})
+        .catch(error => next(error))
     }
 })
 
@@ -77,7 +79,7 @@ app.put('/api/persons/:id', (request, response, next) => {
         name: request.body.name,
         number: request.body.number
     }
-    Person.findByIdAndUpdate(id, person, {new: true}).then(updatedPerson => response.json(updatedPerson)).catch(error => next(error))
+    Person.findByIdAndUpdate(id, person, {new: true, runValidators: true, context: 'query'}).then(updatedPerson => response.json(updatedPerson)).catch(error => next(error))
 }
 )
 
@@ -85,6 +87,8 @@ const errorHandler = (error, request, response, next) => {
     console.error(error)
     if (error.name === 'CastError') {
         return response.status(400).send({ error: 'malformed id' })
+    } else if (error.name === 'ValidationError') {
+        return response.status(400).send({error: "Name must be at least three characters long/phone number must be in correct format"})
     }
     next(error)
 }
