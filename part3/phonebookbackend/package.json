@@ -6,19 +6,22 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "lint": "eslint ."
   },
   "author": "Neil Martey",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
+    "eslint": "^8.56.0",
     "express": "^4.18.2",
     "mongoose": "^8.0.3",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
     "@flydotio/dockerfile": "^0.5.0",
+    "eslint-config-airbnb": "^19.0.4",
     "nodemon": "^3.0.2"
   }
 }
